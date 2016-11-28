@@ -395,15 +395,6 @@ class Node implements NodeInterface
     /**
      * {@inheritdoc}
      */
-    public function isInstanceOf($className)
-    {
-
-        return is_a($this, $className);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function findChildren(callable $callback, $depth = null, $level = null)
     {
 

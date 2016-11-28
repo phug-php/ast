@@ -241,17 +241,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      * @return bool
      */
     public function is(callable $callback);
-
-    /**
-     * Returns true if this node extends a certain class.
-     *
-     * @param $className
-     *
-     * @return bool
-     */
-    public function isInstanceOf($className);
-
-
+    
     /**
      * Traverses the tree and returns all child elements that match the given callback.
      *
