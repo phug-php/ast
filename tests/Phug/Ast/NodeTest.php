@@ -102,7 +102,6 @@ class NodeTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ::appendChild
      * @covers ::findChildrenArray
-     * @covers ::isInstanceOf
      * @covers ::getNextSibling
      */
     public function testFindChildren()
@@ -124,32 +123,32 @@ class NodeTest extends \PHPUnit_Framework_TestCase
 
         $aChildren = $node->findChildrenArray(function (NodeInterface $node) {
 
-            return $node->isInstanceOf(A::class);
+            return $node instanceof A;
         });
 
         $bDeepChildren = $node->findChildrenArray(function (NodeInterface $node) {
 
-            return $node->isInstanceOf(B::class);
+            return $node instanceof B;
         });
 
         $bFirstChildren = $node->findChildrenArray(function (NodeInterface $node) {
 
-            return $node->isInstanceOf(B::class);
+            return $node instanceof B;
         }, 0);
 
         $bSecondChildren = $node->findChildrenArray(function (NodeInterface $node) {
 
-            return $node->isInstanceOf(B::class);
+            return $node instanceof B;
         }, 1);
 
         $cChildren = $node->findChildrenArray(function (NodeInterface $node) {
 
-            return $node->isInstanceOf(C::class);
+            return $node instanceof C;
         });
 
         $dChildren = $node->findChildrenArray(function (NodeInterface $node) {
 
-            return $node->isInstanceOf(D::class);
+            return $node instanceof D;
         });
 
         $this->assertCount(1, $aChildren, 'A children');
