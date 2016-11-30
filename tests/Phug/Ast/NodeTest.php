@@ -4,6 +4,7 @@ namespace Phug\Test\Ast;
 
 use Phug\Ast\Node;
 use Phug\Ast\NodeInterface;
+use Phug\AstException;
 
 //@codingStandardsIgnoreStart
 class A extends Node
@@ -26,38 +27,283 @@ class NodeTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @covers ::__construct
+     * @covers ::getParent
+     * @covers ::getChildren
+     */
+    public function testConstructor()
+    {
+        
+        $a = new A;
+        self::assertInstanceOf(Node::class, $a);
+
+        $b = new B($a);
+        self::assertSame($a, $b->getParent());
+        self::assertSame([$b], $a->getChildren());
+
+        $d = new D(null, [$a, $c = new C]);
+        self::assertSame($d, $a->getParent());
+        self::assertSame($d, $c->getParent());
+        self::assertSame([$a, $c], $d->getChildren());
+    }
+
+    /**
+     * @covers ::__clone
+     * @covers ::getChildren
+     */
+    public function testClone()
+    {
+
+        $a = new A(null, [$b = new B, $c = new C]);
+        $aClone = clone $a;
+
+        self::assertNotSame($a, $aClone);
+        self::assertEquals($a, $aClone);
+
+        self::assertNotSame($a->getChildren(), $aClone->getChildren());
+        self::assertEquals($a->getChildren(), $aClone->getChildren());
+    }
+
+    /**
+     * @covers ::hasParent
+     * @covers ::setParent
+     */
+    public function testHasAndSetParent()
+    {
+
+        $a = new A;
+        self::assertFalse($a->hasParent());
+
+        $a->setParent(new B);
+        self::assertTrue($a->hasParent());
+    }
+
+    /**
+     * @covers ::getParent
+     * @covers ::setParent
+     */
+    public function testGetAndSetParent()
+    {
+
+        $a = new A;
+        self::assertNull($a->getParent());
+
+        $a->setParent($b = new B);
+        self::assertSame($b, $a->getParent());
+    }
+
+    public function testHasChildren()
+    {
+
+        $a = new A;
+        self::assertFalse($a->hasChildren());
+
+        $a->appendChild(new B);
+        self::assertTrue($a->hasChildren());
+    }
+
+    /**
+     * @covers ::getChildCount
+     * @covers ::count
+     */
+    public function testGetChildCount()
+    {
+
+        $a = new A;
+        self::assertEquals(0, $a->getChildCount());
+        self::assertEquals(0, $a->count());
+        self::assertEquals(0, count($a));
+
+        $a->appendChild(new B);
+        self::assertEquals(1, $a->getChildCount());
+        self::assertEquals(1, $a->count());
+        self::assertEquals(1, count($a));
+        
+        $a->appendChild(new C);
+        self::assertEquals(2, $a->getChildCount());
+        self::assertEquals(2, $a->count());
+        self::assertEquals(2, count($a));
+    }
+
+    /**
+     * @covers ::getChildIndex
+     * @covers ::getIndex
+     */
+    public function testGetChildIndex()
+    {
+
+        $a = new A(null, [
+            $b = new B,
+            $c = new C,
+            $d = new D
+        ]);
+
+        self::assertEquals(0, $a->getChildIndex($b));
+        self::assertEquals(0, $b->getIndex());
+        self::assertEquals(1, $a->getChildIndex($c));
+        self::assertEquals(1, $c->getIndex());
+        self::assertEquals(2, $a->getChildIndex($d));
+        self::assertEquals(2, $d->getIndex());
+    }
+
+    /**
+     * @covers ::setChildren
+     * @covers ::getChildren
+     * @covers ::getParent
+     */
+    public function testGetAndSetChildren()
+    {
+
+        $a = new A;
+        $a->setChildren([$b = new B, $c = new C]);
+
+        self::assertSame($a, $b->getParent());
+        self::assertSame($a, $c->getParent());
+        self::assertSame([$b, $c], $a->getChildren());
+    }
+
+    /**
+     * @covers ::removeChildren
+     * @covers ::getParent
+     */
+    public function testRemoveChildren()
+    {
+
+        $a = new A(null, [$b = new B, $c = new C, $d = new D]);
+        self::assertCount(3, $a);
+
+        $a->removeChildren();
+        self::assertNull($b->getParent());
+        self::assertNull($c->getParent());
+        self::assertNull($d->getParent());
+        self::assertCount(0, $a);
+    }
+
+    /**
+     * @covers ::hasChild
+     */
+    public function testHasChild()
+    {
+
+        $a = new A(null, [
+            $b = new B,
+            $c = new C
+        ]);
+
+        $d = new D;
+
+        self::assertTrue($a->hasChild($b));
+        self::assertTrue($a->hasChild($c));
+        self::assertFalse($a->hasChild($d));
+    }
+
+    /**
+     * @covers ::hasChildAt
+     */
+    public function testHasChildAt()
+    {
+
+        $a = new A(null, [
+            $b = new B,
+            $c = new C
+        ]);
+
+        $d = new D;
+
+        self::assertTrue($a->hasChildAt(0));
+        self::assertTrue($a->hasChildAt(1));
+        self::assertFalse($a->hasChildAt(2));
+    }
+
+    /**
+     * @covers ::getChildAt
+     */
+    public function testGetChildAt()
+    {
+
+        $a = new A(null, [
+            $b = new B,
+            $c = new C
+        ]);
+
+        self::assertSame($b, $a->getChildAt(0));
+        self::assertSame($c, $a->getChildAt(1));
+    }
+
+    /**
+     * @covers ::getChildAt
+     */
+    public function testGetChildAtWithInvalidOffset()
+    {
+
+        $a = new A;
+        self::setExpectedException(AstException::class);
+        $a->getChildAt(3);
+    }
+
+    /**
+     * @covers ::removeChildAt
+     */
+    public function testRemoveChildAt()
+    {
+
+        $a = new A(null, [
+            $b = new B,
+            $c = new C
+        ]);
+
+        self::assertCount(2, $a);
+
+        $a->removeChildAt(0);
+        self::assertCount(1, $a);
+        self::assertSame($c, $a->getChildAt(0));
+    }
+
+    /**
+     * @covers ::removeChildAt
+     */
+    public function testRemoveChildAtWithInvalidOffset()
+    {
+
+        $a = new A;
+        self::setExpectedException(AstException::class);
+        $a->removeChildAt(3);
+    }
+
+    /**
      * @covers ::appendChild
      * @covers ::prependChild
      * @covers ::getIndex
      * @covers ::getChildAt
      */
-    public function testAppendChild()
+    public function testAppendAndPrependChild()
     {
 
-        $node = new Node();
+        $node = new Node;
 
-        $node->appendChild($a = new A());
+        $node->appendChild($a = new A);
         $b = new B($node);
-        $node->prependChild($c = new C());
-        $node->appendChild($d = new D());
+        $node->prependChild($c = new C);
+        $node->appendChild($d = new D);
 
-        $this->assertEquals(1, $a->getIndex());
-        $this->assertEquals(2, $b->getIndex());
-        $this->assertEquals(0, $c->getIndex());
-        $this->assertEquals(3, $d->getIndex());
-        $this->assertInstanceOf(A::class, $node->getChildAt(1));
-        $this->assertInstanceOf(B::class, $node->getChildAt(2));
-        $this->assertInstanceOf(C::class, $node->getChildAt(0));
-        $this->assertInstanceOf(D::class, $node->getChildAt(3));
+        self::assertEquals(1, $a->getIndex());
+        self::assertEquals(2, $b->getIndex());
+        self::assertEquals(0, $c->getIndex());
+        self::assertEquals(3, $d->getIndex());
+        self::assertInstanceOf(A::class, $node->getChildAt(1));
+        self::assertInstanceOf(B::class, $node->getChildAt(2));
+        self::assertInstanceOf(C::class, $node->getChildAt(0));
+        self::assertInstanceOf(D::class, $node->getChildAt(3));
     }
 
     /**
      * @covers ::appendChild
      * @covers ::prependChild
      * @covers ::remove
+     * @covers ::removeChild
      * @covers ::getChildren
      */
-    public function testRemovalResetsOffsetsCorrectly()
+    public function testRemoveChild()
     {
 
         $node = new Node();
@@ -68,8 +314,9 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $node->appendChild($d = new D());
 
         $a->remove();
+        $node->removeChild($b);
 
-        $this->assertSame([$c, $b, $d], $node->getChildren());
+        self::assertSame([$c, $d], $node->getChildren());
     }
 
     /**
@@ -79,7 +326,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      * @covers ::getPreviousSibling
      * @covers ::getNextSibling
      */
-    public function testSiblings()
+    public function testSiblingConnections()
     {
 
         $node = new Node();
@@ -91,12 +338,12 @@ class NodeTest extends \PHPUnit_Framework_TestCase
 
         $a->remove();
 
-        $this->assertSame(null, $c->getPreviousSibling());
-        $this->assertSame($b, $c->getNextSibling());
-        $this->assertSame(null, $d->getNextSibling());
-        $this->assertSame($b, $d->getPreviousSibling());
-        $this->assertSame($c, $b->getPreviousSibling());
-        $this->assertSame($d, $b->getNextSibling());
+        self::assertSame(null, $c->getPreviousSibling());
+        self::assertSame($b, $c->getNextSibling());
+        self::assertSame(null, $d->getNextSibling());
+        self::assertSame($b, $d->getPreviousSibling());
+        self::assertSame($c, $b->getPreviousSibling());
+        self::assertSame($d, $b->getNextSibling());
     }
 
     /**
@@ -151,12 +398,12 @@ class NodeTest extends \PHPUnit_Framework_TestCase
             return $node instanceof D;
         });
 
-        $this->assertCount(1, $aChildren, 'A children');
-        $this->assertCount(6, $bDeepChildren, 'B deep children');
-        $this->assertCount(3, $bFirstChildren, 'B first level');
-        $this->assertCount(5, $bSecondChildren, 'B 2 levels');
-        $this->assertCount(3, $cChildren, 'C children');
-        $this->assertCount(4, $dChildren, 'D children');
+        self::assertCount(1, $aChildren, 'A children');
+        self::assertCount(6, $bDeepChildren, 'B deep children');
+        self::assertCount(3, $bFirstChildren, 'B first level');
+        self::assertCount(5, $bSecondChildren, 'B 2 levels');
+        self::assertCount(3, $cChildren, 'C children');
+        self::assertCount(4, $dChildren, 'D children');
     }
 }
 //@codingStandardsIgnoreEnd

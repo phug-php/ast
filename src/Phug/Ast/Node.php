@@ -89,7 +89,7 @@ class Node implements NodeInterface
             return $this;
         }
 
-        if ($parent !== null && $this->parent && $this->parent->hasChild($this)) {
+        if ($this->parent && $this->parent->hasChild($this)) {
             $this->parent->removeChild($this);
             return $this;
         }
@@ -190,6 +190,11 @@ class Node implements NodeInterface
     public function getChildAt($index)
     {
 
+        if (!$this->hasChildAt($index))
+            throw new AstException(
+                "Failed to get child: No child found at $index"
+            );
+
         return $this->children[$index];
     }
 
@@ -198,13 +203,7 @@ class Node implements NodeInterface
      */
     public function removeChildAt($index)
     {
-
-        if (!$this->hasChildAt($index)) {
-            throw new AstException(
-                "Failed to remove child: No child found at $index"
-            );
-        }
-
+        
         return $this->removeChild($this->getChildAt($index));
     }
 
