@@ -165,19 +165,19 @@ class NodeTest extends \PHPUnit_Framework_TestCase
     public function testGetChildCount()
     {
         $a = new A();
-        self::assertEquals(0, $a->getChildCount());
-        self::assertEquals(0, $a->count());
-        self::assertEquals(0, count($a));
+        self::assertSame(0, $a->getChildCount());
+        self::assertSame(0, $a->count());
+        self::assertSame(0, count($a));
 
         $a->appendChild(new B());
-        self::assertEquals(1, $a->getChildCount());
-        self::assertEquals(1, $a->count());
-        self::assertEquals(1, count($a));
+        self::assertSame(1, $a->getChildCount());
+        self::assertSame(1, $a->count());
+        self::assertSame(1, count($a));
 
         $a->appendChild(new C());
-        self::assertEquals(2, $a->getChildCount());
-        self::assertEquals(2, $a->count());
-        self::assertEquals(2, count($a));
+        self::assertSame(2, $a->getChildCount());
+        self::assertSame(2, $a->count());
+        self::assertSame(2, count($a));
     }
 
     /**
@@ -192,12 +192,13 @@ class NodeTest extends \PHPUnit_Framework_TestCase
             $d = new D(),
         ]);
 
-        self::assertEquals(0, $a->getChildIndex($b));
-        self::assertEquals(0, $b->getIndex());
-        self::assertEquals(1, $a->getChildIndex($c));
-        self::assertEquals(1, $c->getIndex());
-        self::assertEquals(2, $a->getChildIndex($d));
-        self::assertEquals(2, $d->getIndex());
+        self::assertSame(0, $a->getChildIndex($b));
+        self::assertSame(0, $b->getIndex());
+        self::assertSame(1, $a->getChildIndex($c));
+        self::assertSame(1, $c->getIndex());
+        self::assertSame(2, $a->getChildIndex($d));
+        self::assertSame(2, $d->getIndex());
+        self::assertSame(null, $a->getIndex());
     }
 
     /**
@@ -333,10 +334,10 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $node->prependChild($c = new C());
         $node->appendChild($d = new D());
 
-        self::assertEquals(1, $a->getIndex());
-        self::assertEquals(2, $b->getIndex());
-        self::assertEquals(0, $c->getIndex());
-        self::assertEquals(3, $d->getIndex());
+        self::assertSame(1, $a->getIndex());
+        self::assertSame(2, $b->getIndex());
+        self::assertSame(0, $c->getIndex());
+        self::assertSame(3, $d->getIndex());
         self::assertInstanceOf(A::class, $node->getChildAt(1));
         self::assertInstanceOf(B::class, $node->getChildAt(2));
         self::assertInstanceOf(C::class, $node->getChildAt(0));
