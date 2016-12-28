@@ -552,7 +552,6 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         }
         self::assertSame([$b], $result);
 
-
         $a[1] = $d;
         $result = [];
         foreach ($a as $child) {
@@ -569,7 +568,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
     public function testOffsetSetInvalidArgument()
     {
         $a = new A();
-        $a[0] = "foo";
+        $a[0] = 'foo';
     }
 }
 //@codingStandardsIgnoreEnd
