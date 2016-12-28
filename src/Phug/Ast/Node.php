@@ -91,7 +91,6 @@ class Node implements NodeInterface
 
         if ($this->parent && $this->parent->hasChild($this)) {
             $this->parent->removeChild($this);
-            return $this;
         }
 
         $this->parent = $parent;
@@ -203,7 +202,7 @@ class Node implements NodeInterface
      */
     public function removeChildAt($index)
     {
-        
+
         return $this->removeChild($this->getChildAt($index));
     }
 

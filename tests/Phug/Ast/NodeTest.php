@@ -33,7 +33,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor()
     {
-        
+
         $a = new A;
         self::assertInstanceOf(Node::class, $a);
 
@@ -74,8 +74,20 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $a = new A;
         self::assertFalse($a->hasParent());
 
-        $a->setParent(new B);
+        $b = new B;
+        $a->setParent($b);
         self::assertTrue($a->hasParent());
+        self::assertSame($b, $a->getParent());
+
+        $a->setParent($b);
+        self::assertSame($b, $a->getParent());
+
+        $c = new C;
+        $a->setParent($c);
+
+        self::assertSame($c, $a->getParent());
+        self::assertTrue($c->hasChild($a));
+        self::assertFalse($b->hasChild($a));
     }
 
     /**
@@ -92,6 +104,9 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         self::assertSame($b, $a->getParent());
     }
 
+    /**
+     * @covers ::hasChildren
+     */
     public function testHasChildren()
     {
 
@@ -100,6 +115,52 @@ class NodeTest extends \PHPUnit_Framework_TestCase
 
         $a->appendChild(new B);
         self::assertTrue($a->hasChildren());
+    }
+
+    /**
+     * @covers ::append
+     */
+    public function testAppend()
+    {
+
+        $a = new A;
+        $b = new B;
+        $c = new C;
+        $a->setParent($c);
+        $a->append($b);
+
+        self::assertSame($b, $c->getChildAt(1));
+    }
+
+    /**
+     * @covers ::prepend
+     */
+    public function testPrepend()
+    {
+
+        $a = new A;
+        $b = new B;
+        $c = new C;
+        $a->setParent($c);
+        $a->prepend($b);
+
+        self::assertSame($b, $c->getChildAt(0));
+    }
+
+    /**
+     * @covers ::is
+     */
+    public function testIs()
+    {
+
+        $a = new A;
+
+        self::assertTrue($a->is(function ($node) {
+            return $node instanceof A;
+        }));
+        self::assertFalse($a->is(function ($node) {
+            return $node instanceof B;
+        }));
     }
 
     /**
@@ -118,7 +179,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         self::assertEquals(1, $a->getChildCount());
         self::assertEquals(1, $a->count());
         self::assertEquals(1, count($a));
-        
+
         $a->appendChild(new C);
         self::assertEquals(2, $a->getChildCount());
         self::assertEquals(2, $a->count());
@@ -273,6 +334,8 @@ class NodeTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ::appendChild
      * @covers ::prependChild
+     * @covers ::prepareChild
+     * @covers ::finishChild
      * @covers ::getIndex
      * @covers ::getChildAt
      */
@@ -404,6 +467,78 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         self::assertCount(5, $bSecondChildren, 'B 2 levels');
         self::assertCount(3, $cChildren, 'C children');
         self::assertCount(4, $dChildren, 'D children');
+    }
+
+    /**
+     * @covers                   ::insertBefore
+     * @expectedException        \Phug\AstException
+     * @expectedExceptionMessage Failed to insert before: Passed child is not a child of element to insert in
+     */
+    public function testInsertBeforeWithBadSibling()
+    {
+
+        $a = new A;
+        $a->insertBefore(new C, new B);
+    }
+
+    /**
+     * @covers ::insertBefore
+     * @covers ::prepareChild
+     * @covers ::finishChild
+     */
+    public function testInsertBefore()
+    {
+
+        $a = new A;
+        $b = new B;
+        $c = new C;
+        $d = new D;
+        $a->appendChild($b);
+        $c->appendChild($d);
+        $c->insertBefore($d, $b);
+
+        self::assertSame(2, $c->getChildCount(), 'C children');
+        self::assertSame(0, $a->getChildCount(), 'A children');
+        self::assertTrue($c->hasChild($b));
+        self::assertTrue($c->hasChild($d));
+        self::assertSame($b, $c->getChildAt(0));
+        self::assertSame($d, $c->getChildAt(1));
+    }
+
+    /**
+     * @covers                   ::insertAfter
+     * @expectedException        \Phug\AstException
+     * @expectedExceptionMessage Failed to insert after: Passed child is not a child of element to insert in
+     */
+    public function testInsertAfterWithBadSibling()
+    {
+
+        $a = new A;
+        $a->insertAfter(new C, new B);
+    }
+
+    /**
+     * @covers ::insertAfter
+     * @covers ::prepareChild
+     * @covers ::finishChild
+     */
+    public function testInsertAfter()
+    {
+
+        $a = new A;
+        $b = new B;
+        $c = new C;
+        $d = new D;
+        $a->appendChild($b);
+        $c->appendChild($d);
+        $c->insertAfter($d, $b);
+
+        self::assertSame(2, $c->getChildCount(), 'C children');
+        self::assertSame(0, $a->getChildCount(), 'A children');
+        self::assertTrue($c->hasChild($b));
+        self::assertTrue($c->hasChild($d));
+        self::assertSame($b, $c->getChildAt(1));
+        self::assertSame($d, $c->getChildAt(0));
     }
 }
 //@codingStandardsIgnoreEnd
