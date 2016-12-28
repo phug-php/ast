@@ -78,7 +78,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $a->setParent($b);
         self::assertSame($b, $a->getParent());
 
-        $c = new C;
+        $c = new C();
         $a->setParent($c);
 
         self::assertSame($c, $a->getParent());
@@ -113,17 +113,20 @@ class NodeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers ::append
+     * @covers ::prepareChild
      */
     public function testAppend()
     {
-
-        $a = new A;
-        $b = new B;
-        $c = new C;
+        $a = new A();
+        $b = new B();
+        $c = new C();
         $a->setParent($c);
         $a->append($b);
 
         self::assertSame($b, $c->getChildAt(1));
+        $b->append($a);
+        self::assertSame($b, $c->getChildAt(0));
+        self::assertSame($a, $c->getChildAt(1));
     }
 
     /**
@@ -131,10 +134,9 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrepend()
     {
-
-        $a = new A;
-        $b = new B;
-        $c = new C;
+        $a = new A();
+        $b = new B();
+        $c = new C();
         $a->setParent($c);
         $a->prepend($b);
 
@@ -146,8 +148,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testIs()
     {
-
-        $a = new A;
+        $a = new A();
 
         self::assertTrue($a->is(function ($node) {
             return $node instanceof A;
@@ -450,9 +451,8 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testInsertBeforeWithBadSibling()
     {
-
-        $a = new A;
-        $a->insertBefore(new C, new B);
+        $a = new A();
+        $a->insertBefore(new C(), new B());
     }
 
     /**
@@ -462,11 +462,10 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testInsertBefore()
     {
-
-        $a = new A;
-        $b = new B;
-        $c = new C;
-        $d = new D;
+        $a = new A();
+        $b = new B();
+        $c = new C();
+        $d = new D();
         $a->appendChild($b);
         $c->appendChild($d);
         $c->insertBefore($d, $b);
@@ -486,9 +485,8 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testInsertAfterWithBadSibling()
     {
-
-        $a = new A;
-        $a->insertAfter(new C, new B);
+        $a = new A();
+        $a->insertAfter(new C(), new B());
     }
 
     /**
@@ -498,11 +496,10 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testInsertAfter()
     {
-
-        $a = new A;
-        $b = new B;
-        $c = new C;
-        $d = new D;
+        $a = new A();
+        $b = new B();
+        $c = new C();
+        $d = new D();
         $a->appendChild($b);
         $c->appendChild($d);
         $c->insertAfter($d, $b);
@@ -513,6 +510,65 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         self::assertTrue($c->hasChild($d));
         self::assertSame($b, $c->getChildAt(1));
         self::assertSame($d, $c->getChildAt(0));
+    }
+
+    /**
+     * @covers ::getIterator
+     * @covers ::offsetExists
+     * @covers ::offsetGet
+     * @covers ::offsetSet
+     * @covers ::offsetUnset
+     */
+    public function testGetIterator()
+    {
+        $a = new A();
+        $b = new B();
+        $c = new C();
+        $d = new D();
+        $a->appendChild($b);
+        $a->appendChild($c);
+        $result = [];
+        foreach ($a as $child) {
+            $result[] = $child;
+        }
+
+        self::assertSame([$b, $c], $result);
+        self::assertTrue(isset($a[0]));
+        self::assertTrue(isset($a[1]));
+        self::assertFalse(isset($a[2]));
+        self::assertSame($b, $a[0]);
+        self::assertSame($c, $a[1]);
+
+        $a[1] = $d;
+        self::assertSame($d, $a[1]);
+
+        unset($a[1]);
+        self::assertFalse(isset($a[1]));
+
+        $result = [];
+        foreach ($a as $child) {
+            $result[] = $child;
+        }
+        self::assertSame([$b], $result);
+
+
+        $a[1] = $d;
+        $result = [];
+        foreach ($a as $child) {
+            $result[] = $child;
+        }
+        self::assertSame([$b, $d], $result);
+    }
+
+    /**
+     * @covers                   ::offsetSet
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage Argument 2 passed to Node->offsetSet needs to be instance of Phug\Ast\NodeInterface
+     */
+    public function testOffsetSetInvalidArgument()
+    {
+        $a = new A();
+        $a[0] = "foo";
     }
 }
 //@codingStandardsIgnoreEnd

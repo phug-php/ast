@@ -84,8 +84,6 @@ class Node implements NodeInterface
 
         if ($this->parent && $this->parent->hasChild($this)) {
             $this->parent->removeChild($this);
-
-            return $this;
         }
 
         $this->parent = $parent;
