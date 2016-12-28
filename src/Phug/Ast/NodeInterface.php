@@ -15,7 +15,6 @@ use IteratorAggregate;
  */
 interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
 {
-
     /**
      * Creates a recursive, detached copy of the current node.
      */
@@ -103,7 +102,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @param NodeInterface $child
      *
-     * @return boolean
+     * @return bool
      */
     public function hasChild(NodeInterface $child);
 
@@ -188,6 +187,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      * Returns the numerical index of this child inside its parent.
      *
      * Returns the index
+     *
      * @return int|false
      */
     public function getIndex();
@@ -241,7 +241,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      * @return bool
      */
     public function is(callable $callback);
-    
+
     /**
      * Traverses the tree and returns all child elements that match the given callback.
      *
@@ -250,8 +250,8 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      * This method is exclusive, it doesn't include this child in its checks.
      *
      * @param callable $callback
-     * @param int $depth
-     * @param int $level
+     * @param int      $depth
+     * @param int      $level
      *
      * @return \Generator
      */
@@ -261,8 +261,8 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      * Same as `findChildren()`, but returns an iterated array instead of a generator.
      *
      * @param callable $callback
-     * @param int $depth
-     * @param int $level
+     * @param int      $depth
+     * @param int      $level
      *
      * @return NodeInterface[]
      */
@@ -276,7 +276,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      * This method is inclusive, it includes this child in its checks.
      *
      * @param callable $callback
-     * @param int $depth
+     * @param int      $depth
      *
      * @return \Generator
      */
@@ -286,7 +286,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      * Same as `find()`, but returns an iterated array instead of a generator.
      *
      * @param callable $callback
-     * @param int $depth
+     * @param int      $depth
      *
      * @return NodeInterface[]
      */

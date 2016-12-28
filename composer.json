@@ -9,6 +9,11 @@
         {
             "name": "Torben Koehn",
             "email": "torben@talesoft.codes"
+        },
+        {
+            "name": "KyleKatarn",
+            "email": "jade-php@selfbuild.fr",
+            "homepage": "http://github.com/kylekatarnls"
         }
     ],
     "support": {

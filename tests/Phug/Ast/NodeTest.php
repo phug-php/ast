@@ -25,7 +25,6 @@ class D extends Node
  */
 class NodeTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @covers ::__construct
      * @covers ::getParent
@@ -33,15 +32,14 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor()
     {
-
-        $a = new A;
+        $a = new A();
         self::assertInstanceOf(Node::class, $a);
 
         $b = new B($a);
         self::assertSame($a, $b->getParent());
         self::assertSame([$b], $a->getChildren());
 
-        $d = new D(null, [$a, $c = new C]);
+        $d = new D(null, [$a, $c = new C()]);
         self::assertSame($d, $a->getParent());
         self::assertSame($d, $c->getParent());
         self::assertSame([$a, $c], $d->getChildren());
@@ -53,8 +51,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testClone()
     {
-
-        $a = new A(null, [$b = new B, $c = new C]);
+        $a = new A(null, [$b = new B(), $c = new C()]);
         $aClone = clone $a;
 
         self::assertNotSame($a, $aClone);
@@ -70,11 +67,10 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testHasAndSetParent()
     {
-
-        $a = new A;
+        $a = new A();
         self::assertFalse($a->hasParent());
 
-        $b = new B;
+        $b = new B();
         $a->setParent($b);
         self::assertTrue($a->hasParent());
         self::assertSame($b, $a->getParent());
@@ -96,11 +92,10 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAndSetParent()
     {
-
-        $a = new A;
+        $a = new A();
         self::assertNull($a->getParent());
 
-        $a->setParent($b = new B);
+        $a->setParent($b = new B());
         self::assertSame($b, $a->getParent());
     }
 
@@ -109,11 +104,10 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testHasChildren()
     {
-
-        $a = new A;
+        $a = new A();
         self::assertFalse($a->hasChildren());
 
-        $a->appendChild(new B);
+        $a->appendChild(new B());
         self::assertTrue($a->hasChildren());
     }
 
@@ -169,18 +163,17 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetChildCount()
     {
-
-        $a = new A;
+        $a = new A();
         self::assertEquals(0, $a->getChildCount());
         self::assertEquals(0, $a->count());
         self::assertEquals(0, count($a));
 
-        $a->appendChild(new B);
+        $a->appendChild(new B());
         self::assertEquals(1, $a->getChildCount());
         self::assertEquals(1, $a->count());
         self::assertEquals(1, count($a));
 
-        $a->appendChild(new C);
+        $a->appendChild(new C());
         self::assertEquals(2, $a->getChildCount());
         self::assertEquals(2, $a->count());
         self::assertEquals(2, count($a));
@@ -192,11 +185,10 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetChildIndex()
     {
-
         $a = new A(null, [
-            $b = new B,
-            $c = new C,
-            $d = new D
+            $b = new B(),
+            $c = new C(),
+            $d = new D(),
         ]);
 
         self::assertEquals(0, $a->getChildIndex($b));
@@ -214,9 +206,8 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAndSetChildren()
     {
-
-        $a = new A;
-        $a->setChildren([$b = new B, $c = new C]);
+        $a = new A();
+        $a->setChildren([$b = new B(), $c = new C()]);
 
         self::assertSame($a, $b->getParent());
         self::assertSame($a, $c->getParent());
@@ -229,8 +220,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveChildren()
     {
-
-        $a = new A(null, [$b = new B, $c = new C, $d = new D]);
+        $a = new A(null, [$b = new B(), $c = new C(), $d = new D()]);
         self::assertCount(3, $a);
 
         $a->removeChildren();
@@ -245,13 +235,12 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testHasChild()
     {
-
         $a = new A(null, [
-            $b = new B,
-            $c = new C
+            $b = new B(),
+            $c = new C(),
         ]);
 
-        $d = new D;
+        $d = new D();
 
         self::assertTrue($a->hasChild($b));
         self::assertTrue($a->hasChild($c));
@@ -263,13 +252,12 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testHasChildAt()
     {
-
         $a = new A(null, [
-            $b = new B,
-            $c = new C
+            $b = new B(),
+            $c = new C(),
         ]);
 
-        $d = new D;
+        $d = new D();
 
         self::assertTrue($a->hasChildAt(0));
         self::assertTrue($a->hasChildAt(1));
@@ -281,10 +269,9 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetChildAt()
     {
-
         $a = new A(null, [
-            $b = new B,
-            $c = new C
+            $b = new B(),
+            $c = new C(),
         ]);
 
         self::assertSame($b, $a->getChildAt(0));
@@ -296,8 +283,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetChildAtWithInvalidOffset()
     {
-
-        $a = new A;
+        $a = new A();
         self::setExpectedException(AstException::class);
         $a->getChildAt(3);
     }
@@ -307,10 +293,9 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveChildAt()
     {
-
         $a = new A(null, [
-            $b = new B,
-            $c = new C
+            $b = new B(),
+            $c = new C(),
         ]);
 
         self::assertCount(2, $a);
@@ -325,8 +310,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveChildAtWithInvalidOffset()
     {
-
-        $a = new A;
+        $a = new A();
         self::setExpectedException(AstException::class);
         $a->removeChildAt(3);
     }
@@ -341,13 +325,12 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAppendAndPrependChild()
     {
+        $node = new Node();
 
-        $node = new Node;
-
-        $node->appendChild($a = new A);
+        $node->appendChild($a = new A());
         $b = new B($node);
-        $node->prependChild($c = new C);
-        $node->appendChild($d = new D);
+        $node->prependChild($c = new C());
+        $node->appendChild($d = new D());
 
         self::assertEquals(1, $a->getIndex());
         self::assertEquals(2, $b->getIndex());
@@ -368,7 +351,6 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveChild()
     {
-
         $node = new Node();
 
         $node->appendChild($a = new A());
@@ -391,7 +373,6 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testSiblingConnections()
     {
-
         $node = new Node();
 
         $node->appendChild($a = new A());
@@ -416,7 +397,6 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindChildren()
     {
-
         $node = new Node();
 
         $node->appendChild(new A())
@@ -432,32 +412,26 @@ class NodeTest extends \PHPUnit_Framework_TestCase
             ->appendChild(new D());
 
         $aChildren = $node->findChildrenArray(function (NodeInterface $node) {
-
             return $node instanceof A;
         });
 
         $bDeepChildren = $node->findChildrenArray(function (NodeInterface $node) {
-
             return $node instanceof B;
         });
 
         $bFirstChildren = $node->findChildrenArray(function (NodeInterface $node) {
-
             return $node instanceof B;
         }, 0);
 
         $bSecondChildren = $node->findChildrenArray(function (NodeInterface $node) {
-
             return $node instanceof B;
         }, 1);
 
         $cChildren = $node->findChildrenArray(function (NodeInterface $node) {
-
             return $node instanceof C;
         });
 
         $dChildren = $node->findChildrenArray(function (NodeInterface $node) {
-
             return $node instanceof D;
         });
 
