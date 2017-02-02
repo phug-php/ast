@@ -570,5 +570,29 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $a = new A();
         $a[0] = 'foo';
     }
+
+    /**
+     * @covers ::find
+     * @covers ::findArray
+     * @covers ::findChildren
+     */
+    public function testFind()
+    {
+        $a = new A();
+        $b = new B();
+        $c = new C();
+        $b->appendChild($c);
+        $a->appendChild($b);
+
+        self::assertSame([$a, $b, $c], $a->findArray(function ($node) {
+            return in_array(basename(get_class($node)), ['A', 'B', 'C']);
+        }));
+        self::assertSame([$a, $c], $a->findArray(function ($node) {
+            return in_array(basename(get_class($node)), ['A', 'C']);
+        }));
+        self::assertSame([$a, $b], $a->findArray(function ($node) {
+            return in_array(basename(get_class($node)), ['A', 'B', 'C']);
+        }, 0));
+    }
 }
 //@codingStandardsIgnoreEnd
