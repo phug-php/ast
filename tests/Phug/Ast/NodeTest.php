@@ -584,14 +584,20 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $b->appendChild($c);
         $a->appendChild($b);
 
-        self::assertSame([$a, $b, $c], $a->findArray(function ($node) {
-            return in_array(basename(get_class($node)), ['A', 'B', 'C']);
+        $nameIn = function ($node, $names) {
+            $pieces = preg_split('`[/\\\\]`', get_class($node));
+
+            return in_array(end($pieces), $names);
+        };
+
+        self::assertSame([$a, $b, $c], $a->findArray(function ($node) use ($nameIn) {
+            return $nameIn($node, ['A', 'B', 'C']);
         }));
-        self::assertSame([$a, $c], $a->findArray(function ($node) {
-            return in_array(basename(get_class($node)), ['A', 'C']);
+        self::assertSame([$a, $c], $a->findArray(function ($node) use ($nameIn) {
+            return $nameIn($node, ['A', 'C']);
         }));
-        self::assertSame([$a, $b], $a->findArray(function ($node) {
-            return in_array(basename(get_class($node)), ['A', 'B', 'C']);
+        self::assertSame([$a, $b], $a->findArray(function ($node) use ($nameIn) {
+            return $nameIn($node, ['A', 'B', 'C']);
         }, 0));
     }
 }

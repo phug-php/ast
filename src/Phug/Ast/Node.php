@@ -412,12 +412,7 @@ class Node implements NodeInterface
      */
     public function findArray(callable $callback, $depth = null)
     {
-        $array = [];
-        foreach ($this->find($callback, $depth) as $child) {
-            $array[] = $child;
-        }
-
-        return $array;
+        return iterator_to_array($this->find($callback, $depth));
     }
 
     /**
