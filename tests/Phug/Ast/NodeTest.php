@@ -2,6 +2,7 @@
 
 namespace Phug\Test\Ast;
 
+use PHPUnit\Framework\TestCase;
 use Phug\Ast\Node;
 use Phug\Ast\NodeInterface;
 use Phug\AstException;
@@ -23,7 +24,7 @@ class D extends Node
 /**
  * @coversDefaultClass Phug\Ast\Node
  */
-class NodeTest extends \PHPUnit_Framework_TestCase
+class NodeTest extends TestCase
 {
     /**
      * @covers ::__construct
