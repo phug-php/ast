@@ -45,7 +45,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return $this
      */
-    public function setParent(NodeInterface $parent);
+    public function setParent(self $parent);
 
     /**
      * Returns `true` if this node has any children, `false` if not.
@@ -68,7 +68,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return int|false
      */
-    public function getChildIndex(NodeInterface $child);
+    public function getChildIndex(self $child);
 
     /**
      * Returns an array of child-nodes attached to this node.
@@ -104,7 +104,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return bool
      */
-    public function hasChild(NodeInterface $child);
+    public function hasChild(self $child);
 
     /**
      * Checks if this node has a child at a specified numerical index.
@@ -140,7 +140,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return $this
      */
-    public function appendChild(NodeInterface $child);
+    public function appendChild(self $child);
 
     /**
      * Prepends a child to the child-list.
@@ -149,7 +149,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return $this
      */
-    public function prependChild(NodeInterface $child);
+    public function prependChild(self $child);
 
     /**
      * Removes a child from the child-list.
@@ -161,7 +161,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return $this
      */
-    public function removeChild(NodeInterface $child);
+    public function removeChild(self $child);
 
     /**
      * Inserts a child before another child in the child-list.
@@ -171,7 +171,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return $this
      */
-    public function insertBefore(NodeInterface $child, NodeInterface $newChild);
+    public function insertBefore(self $child, self $newChild);
 
     /**
      * Inserts a child after another child in the child-list.
@@ -181,7 +181,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return $this
      */
-    public function insertAfter(NodeInterface $child, NodeInterface $newChild);
+    public function insertAfter(self $child, self $newChild);
 
     /**
      * Returns the numerical index of this child inside its parent.
@@ -213,7 +213,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return $this
      */
-    public function append(NodeInterface $child);
+    public function append(self $child);
 
     /**
      * Prepends a child before this node in its parent.
@@ -222,7 +222,7 @@ interface NodeInterface extends IteratorAggregate, Countable, ArrayAccess
      *
      * @return $this
      */
-    public function prepend(NodeInterface $child);
+    public function prepend(self $child);
 
     /**
      * Removes/detaches this node from the tree.
