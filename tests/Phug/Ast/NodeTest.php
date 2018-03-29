@@ -5,7 +5,6 @@ namespace Phug\Test\Ast;
 use PHPUnit\Framework\TestCase;
 use Phug\Ast\Node;
 use Phug\Ast\NodeInterface;
-use Phug\AstException;
 
 //@codingStandardsIgnoreStart
 class A extends Node
