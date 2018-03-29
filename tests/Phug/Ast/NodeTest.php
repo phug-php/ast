@@ -283,11 +283,11 @@ class NodeTest extends TestCase
 
     /**
      * @covers ::getChildAt
+     * @expectedException \Phug\AstException
      */
     public function testGetChildAtWithInvalidOffset()
     {
         $a = new A();
-        self::setExpectedException(AstException::class);
         $a->getChildAt(3);
     }
 
@@ -310,11 +310,11 @@ class NodeTest extends TestCase
 
     /**
      * @covers ::removeChildAt
+     * @expectedException \Phug\AstException
      */
     public function testRemoveChildAtWithInvalidOffset()
     {
         $a = new A();
-        self::setExpectedException(AstException::class);
         $a->removeChildAt(3);
     }
 
