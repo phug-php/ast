@@ -26,14 +26,14 @@
     "require": {
         "php": ">=5.5.0"
     },
-    "require-dev": {
-        "phug/dev-tool": "^0.1.0"
-    },
     "autoload": {
         "psr-4": {
-            "": "./src"
+            "Phug\\": ""
         }
     },
-    "bin": [],
-    "suggest": {}
+    "autoload-dev": {
+        "psr-4": {
+            "Phug\\Test\\": "./tests/Phug/"
+        }
+    }
 }
